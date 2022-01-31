@@ -7,15 +7,18 @@ This repository is the implementation of the following publication:
 
 
 ## Setup
-there are a few geospatial python packages are relied to run this program. It is recommended that you use `Anaconda` to build an exclusive python enviornment for MODISNN. here are some suggested steps if you are note familiar with Anaconda:
+There are a few geospatial python packages are relied to run this program. It is recommended that you use `Anaconda` to build an exclusive python enviornment for MODISNN. here are some suggested steps if you are note familiar with Anaconda:
 - install Anaconda, [Installation Guide](https://docs.anaconda.com/anaconda/install/)
-- create an environment within anaconda: `create 
+- create a conda environment: `conda create -n modisnn python`
+- enter the new enviroment: `conda activate modisnn`
+- install the required packages: `conda install -c conda-forge matplotlib numpy pandas gdal netcdf4`
+
 ## Usage
 The package can be cloned into a directory with:
 `git clone https://github.com/chqzeng/MODISNN`
 or you can manually download this repository and unzip to a local directory
 
-and then run the MODISNN in one of the following two approaches:
+within the `modisnn` conda environment or other similar setup, run the MODISNN in one of the following two approaches:
 ### 1. input spectra as a table
 
 ### 2. input spectra as an image
@@ -40,12 +43,13 @@ in case you would like to apply MODISNN to a new lake and would like to improve 
 - train the MODISNN model, using the script I provided `myscript2.py`
 - after training, the model will be exported as a `.csv` file. add 14band and 9band NN models into the `./NNModel` folder of this repository for further use by assign `lakeID`
 
-### how to run the script with ESA SNAP?
-ESA SNAP use `.dim` files, which are different in file organization than popular `geotiff`, ERDAS `.img` etc. the `.dim` organizes the file structure, dimensions, projections, etc for all the bands, while the bands stored in a separate folder with same name but ending with `.data`
-specifically for MODIS imagery, it applies a conversion when loading the imagery: `Rrs=0.05+2*10-6*DN`.
+### how to run the script with ESA SNAP `.dim` files?
+ESA SNAP uses `.dim` file, which is different in file organization than popular `geotiff`, ERDAS `.img` etc. The `.dim` file organizes the file structure, dimensions, projections, etc for all the bands, while the bands stored in a separate folder with same name but ending with `.data`
 
-I provide an example script `` to process MODINN for ESA SNAP `.dim` file format specifically. use as is.
-`MODISrhos_img_NN_Rrs_MERIS.py`
-
-###
+An example script `MODISNN_MODISrhos_2_OLCIRef_dim.py` provided to process MODINN for ESA SNAP `.dim` file format specifically. for example:
+```
+import MODISNN_MODISrhos_2_OLCIRef_dim as moidsnn
+modisnn.MODISNN_MODISrhos_2_OLCIRef('./TestData/A2011253190500_NN.data/',lakeID='LW') ##the test image is for Lake Winnipeg
+```
+use it as is.
 
