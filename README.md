@@ -26,6 +26,16 @@ within the `modisnn` conda environment or other similar setup, run the MODISNN i
 
 ## Extra: [Optional]
 
+### How to run the script with ESA `.dim` files?
+ESA SNAP uses `.dim` file, which is different in file organization than popular `geotiff`, ERDAS `.img` etc. The `.dim` file organizes the file structure, dimensions, projections, etc for all the bands, while the bands stored in a separate folder with same name but ending with `.data`
+
+An example script `MODISNN_MODISrhos_2_OLCIRef_dim.py` provided to process MODINN for ESA SNAP `.dim` file format specifically. for example:
+```
+import MODISNN_MODISrhos_2_OLCIRef_dim as moidsnn
+modisnn.MODISNN_MODISrhos_2_OLCIRef('./TestData/A2011253190500_NN.data/',lakeID='LW') ##the test image is for Lake Winnipeg
+```
+use it as is.
+
 ### How to prepare MODIS rhos imagery?
 - download MODIS L1 imagery from NASA oceancolor datacatalog
 - run the L1 to L2 processing using   [l2gen](https://seadas.gsfc.nasa.gov/help-8.1.0/processors/ProcessL2gen.html), 
@@ -42,14 +52,4 @@ in case you would like to apply MODISNN to a new lake and would like to improve 
 - join & filter the spectra from the two sensors.  using the script I provided `myscript.py`.
 - train the MODISNN model, using the script I provided `myscript2.py`
 - after training, the model will be exported as a `.csv` file. add 14band and 9band NN models into the `./NNModel` folder of this repository for further use by assign `lakeID`
-
-### how to run the script with ESA SNAP `.dim` files?
-ESA SNAP uses `.dim` file, which is different in file organization than popular `geotiff`, ERDAS `.img` etc. The `.dim` file organizes the file structure, dimensions, projections, etc for all the bands, while the bands stored in a separate folder with same name but ending with `.data`
-
-An example script `MODISNN_MODISrhos_2_OLCIRef_dim.py` provided to process MODINN for ESA SNAP `.dim` file format specifically. for example:
-```
-import MODISNN_MODISrhos_2_OLCIRef_dim as moidsnn
-modisnn.MODISNN_MODISrhos_2_OLCIRef('./TestData/A2011253190500_NN.data/',lakeID='LW') ##the test image is for Lake Winnipeg
-```
-use it as is.
 
