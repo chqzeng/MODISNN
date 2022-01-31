@@ -1,0 +1,13 @@
+ENVI
+description = {Secchi depth, Lee algorithm - Unit: m}
+samples = 308
+lines = 500
+bands = 1
+header offset = 0
+file type = ENVI Standard
+data type = 2
+interleave = bsq
+byte order = 1
+band names = { Zsd_lee }
+data gain values = {0.004999999888241291}
+data offset values = {160.0}

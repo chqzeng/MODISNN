@@ -1,0 +1,13 @@
+ENVI
+description = {Fluorescence Line Height - Unit: W m^-2 um^-1 sr^-1}
+samples = 308
+lines = 500
+bands = 1
+header offset = 0
+file type = ENVI Standard
+data type = 2
+interleave = bsq
+byte order = 1
+band names = { flh }
+data gain values = {8.499999967170879E-5}
+data offset values = {2.25}

@@ -1,0 +1,14 @@
+ENVI
+description = {Remote sensing reflectance at 645 nm - Unit: sr^-1 - Wavelength: 645.0nm}
+samples = 308
+lines = 500
+bands = 1
+header offset = 0
+file type = ENVI Standard
+data type = 2
+interleave = bsq
+byte order = 1
+band names = { Rrs_645 }
+wavelength = {645.0}
+data gain values = {1.9999999949504854E-6}
+data offset values = {0.05000000074505806}
