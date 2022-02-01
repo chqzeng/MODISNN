@@ -23,7 +23,7 @@ or you can manually download this repository and unzip to a local directory
 
 within the `modisnn` conda environment or other similar setup, run the MODISNN in one of the following two approaches:
 ### 1. input spectra as a table
-A quick example:
+An inline example [`example1_inline_spectra.py`]:
 ```
 import os
 import numpy as np
@@ -46,6 +46,10 @@ mci_chl=1457*mci+2.895
 print('==The chl derived from this spectra is: {} \u03BCg/L) =='.format(mci_chl))
 ```
 
+An example with input `csv` file:
+```
+
+```
 ### 2. input spectra as an image
 
 ---
