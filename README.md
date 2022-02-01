@@ -29,10 +29,14 @@ within the `modisnn` conda environment or other similar setup, run the MODISNN i
 ### How to run the script with ESA `.dim` files?
 ESA SNAP uses `.dim` file, which is different in file organization than popular `geotiff`, ERDAS `.img` etc. The `.dim` file organizes the file structure, dimensions, projections, etc for all the bands, while the bands stored in a separate folder with same name but ending with `.data`
 
-An example script `MODISNN_MODISrhos_2_OLCIRef_dim.py` provided to process MODINN for ESA SNAP `.dim` file format specifically. for example:
+An example script `MODISNN_img_dim.py` provided to process MODINN for ESA SNAP `.dim` file format specifically. 
+run with commandline:
+`python MODISNN_img_dim.py "./TestData/A2011253190500_NN.data" --lakeID "LW"`
+
+or using within python script:
 ```
-import MODISNN_MODISrhos_2_OLCIRef_dim as moidsnn
-modisnn.MODISNN_MODISrhos_2_OLCIRef('./TestData/A2011253190500_NN.data/',lakeID='LW') ##the test image is for Lake Winnipeg
+import MODISNN_img_dim as moidsnn
+modisnn.MODISNN_img_dim("./TestData/A2011253190500_NN.data",lakeID="LW") ##the test image is for Lake Winnipeg
 ```
 use it as is.
 
