@@ -23,34 +23,17 @@ or you can manually download this repository and unzip to a local directory
 
 within the `modisnn` conda environment or other similar setup, run the MODISNN in one of the following two approaches:
 ### 1. input spectra as a table
-An inline example [`example1_inline_spectra.py`]:
+An example with input `csv` file [`example1_spectra_csv.py`]:
 ```
-import os
-import numpy as np
-import pandas as pd
-import NN_prediction
-
-##give one MODIS rhos spectra:bandlist=[412,443,469,488,531,547,555,645,667,678,748,859,869,1240]nm
-DN_list=np.array([[0.0176,0.01796,0.021746,0.021756,0.03046,0.0395,0.0417,0.02444,0.023,0.0202,0.02993,0.0187,0.01763,0.00305]])
-
-##load a treained NN model
-lakeID='LErie'
-path_net=r".\NNmodels\{}_NN_params_MODIS_rhos_14B_to_MERISL2_3B.csv".format(lakeID)
-nn_struct=NN_prediction.Load_NNparams(os.path.realpath(path_net))
-
-##run the model and calcuate MCI derived chl
-Ref_pred=NN_prediction.NN_prediction(nn_struct,DN_list)
-MCI=lambda Rrs,Bands: Rrs[1]-Rrs[0]- (Bands[1]-Bands[0])/(Bands[2]-Bands[0])*(Rrs[2]-Rrs[0])
-mci=MCI(Ref_pred,[681.25,708.75,753.75])
-mci_chl=1457*mci+2.895
-print('==The chl derived from this spectra is: {} \u03BCg/L) =='.format(mci_chl))
+python example1_spectra_csv.py .\TestData\MODIS_rhos_samples.csv --lakeID LErie
+```
+### 2. input spectra inline
+An inline example [`example2_spectra_inline.py`]:
+```
+python example2_spectra_inline.py
 ```
 
-An example with input `csv` file:
-```
-
-```
-### 2. input spectra as an image
+### 3. input spectra as an image
 
 ---
 ## Extra: [Optional]
@@ -88,4 +71,4 @@ in case you would like to apply MODISNN to a new lake and would like to improve 
 - join & filter the spectra from the two sensors.  using the script I provided `myscript.py`.
 - train the MODISNN model, using the script I provided `myscript2.py`
 - after training, the model will be exported as a `.csv` file. add 14band and 9band NN models into the `./NNModel` folder of this repository for further use by assign `lakeID`
-
+![TestData/MODISNN_training.svg](TestData/MODISNN_training.svg "MODISNN_training")

@@ -28,7 +28,7 @@ def WaterIndex(Rrs,Bands=[681, 709, 753]):
 
 ##setup the input arguments
 parser = argparse.ArgumentParser(description='MODISNN process image: ESA .dim files')
-parser.add_argument('path_modis_rhos', metavar='path_modis_rhos', type=pathlib.Path, nargs=1,
+parser.add_argument('path_modis_rhos_csv', metavar='path_modis_rhos', type=pathlib.Path, nargs=1,
                     help='the path to csv file of MODIS rhos bands, 14 MODIS bands [412nm to 1240nm] are required. \
                     \ninvalid band values as empty, lat/lon columns are optional; \
                     \nexample at: .\TestData\MODIS_rhos_samples.csv')
