@@ -34,22 +34,25 @@ def WaterIndex(Rrs,Bands=[681, 709, 753]):
 import argparse
 import pathlib
 parser = argparse.ArgumentParser(description='MODISNN training')
-parser.add_argument('-F','--TrainingFile',  type=pathlib.Path, nargs=1,
-                    default='TestData/All_Lakes_Training_NN.pkl',
+parser.add_argument('TrainingFile', type=pathlib.Path, 
+                    default='Training/LNA.pkl',
                     help='the path to the pickle file as the training dataset, \
-                        defayt:TestData/All_Lakes_Training_NN.pkl')
-parser.add_argument('-P', '--plot', nargs=1, type=str,
-                    choices=['True', 'False'],
-                    default='True',
-                    help='the choice of whether plot the result of training, default:True')
-parser.add_argument('-N', '--Ntraining', nargs=1, type=int,
-                    default=15,
-                    help='the max number of Iteration, default:15')
-parser.add_argument('-B', '--NNbands', nargs=1, type=int,
+                        example provided: Training/LNA.pkl')
+parser.add_argument('-B', '--NNbands',metavar='', type=int,
                     default=14,choices=[14,9],
-                    help='selection of NN model input bands,only support 14B and 9B, default:14')
-args = parser.parse_args()
-print("=== debug: ",args.TrainingFile)
+                    help='select # of NN model input bands,only support 14B and 9B, default:14')
+parser.add_argument('-N','--nodes', metavar='',type=int, nargs='+',default=[64,64], help='hidden layer nodes#, default: 64 64')
+parser.add_argument('-T', '--training', metavar='',type=int,
+                    default=15,
+                    help='the max number of iteration, default:15')
+parser.add_argument('-M', '--model', action='store_true',
+                    help='flag to save trained model, default is False')
+parser.add_argument('-P', '--plot', action='store_true',
+                    #choices=['True', 'False'],
+                    #default='True',
+                    help='flag to plot the training result, default is False')
+args = parser.parse_args()  #['Training/LNA.pkl','-N',15,'-B',9,'-M'])
+#print("=== debug: ",args.nodes)
 with open(args.TrainingFile,'rb') as f:  
     LErie_OLCI, LoW_OLCI, LW_OLCI,LErie_MODIS,LoW_MODIS,LW_MODIS = pickle.load(f)
 #combine datasets
@@ -79,22 +82,32 @@ if args.NNbands==14:  #switch to NN9B use "False"
     Y=OLCI_NN14B.loc[flt_train,:]
     X_test=MODIS_NN14B.loc[~flt_train,:]
     Y_test=OLCI_NN14B.loc[~flt_train,:]
-    net = pyrenn.CreateNN([14,64,64,3])
+    nodes=args.nodes
+    nodes.insert(0,args.NNbands)  #input nodes
+    nodes.append(3)    #output nodes
+    net = pyrenn.CreateNN(nodes)  #[14,64,64,3]
 else:
     flt_train=np.random.rand(len(MODIS_NN9B))<0.7  #70% for training+cross validation
     X=MODIS_NN9B.loc[flt_train,:]
     Y=OLCI_NN9B.loc[flt_train,:]
     X_test=MODIS_NN9B.loc[~flt_train,:]
     Y_test=OLCI_NN9B.loc[~flt_train,:]
-    net = pyrenn.CreateNN([9,64,64,3])
+    nodes=args.nodes
+    nodes.insert(0,args.NNbands)  #input nodes
+    nodes.append(3)
+    net = pyrenn.CreateNN(nodes)#[14,64,64,3]
 
 ## ---- NN training   ---
 str_param='LM:'+str(net['nn'])
 net = pyrenn.train_LM(np.transpose(X.to_numpy().astype(float)),\
                          np.transpose(Y.to_numpy().astype(float)),\
-                         net,verbose=True,k_max=args.Ntraining,E_stop=1e-5)
+                         net,verbose=True,k_max=args.training,E_stop=1e-5)
+if args.model:  #save model
+    file_model=args.TrainingFile.parent / "{lakeID}_NN_params_MODIS_rhos_{NNbands}B_to_MERISL2_3B.csv" \
+        .format(lakeID=args.TrainingFile.name.replace(".pkl",""), NNbands=args.NNbands)
+    print('===MODISNN training completed; a trained model written to: {} ==='.format(file_model))
 
-    ## convert model ouput (OLCI/MERIS bands) --> MCI --> chl    
+## convert model ouput (OLCI/MERIS bands) --> MCI --> chl    
 Y_pred = pyrenn.NNOut(np.transpose(X_test.to_numpy().astype(float)),net)
 MCI_obs=WaterIndex(np.transpose(Y_test.to_numpy().astype(float)),  Bands=[680.8,708.329,753.37])
 MCI_pre=WaterIndex(Y_pred,Bands=[680.8,708.329,753.37])
@@ -103,9 +116,9 @@ Chl_pre=1457*MCI_pre+2.895
 stats=KPI_stats.KPI_stats(Chl_obs,Chl_pre,metrics=('rmse', 'bias', 'mdape', 'rsquare'))
 
 ## ---  view the NN performance   --- 
-if str(args.plot).lower()=='true':
+if args.plot:
     plt.figure()  
-    plt.title(str_param,fontweight='bold',fontsize=12,color= 'red')
+    plt.title(str_param,fontweight='bold',fontsize=12,color= 'k')
     plt.plot(Chl_obs,Chl_pre,'b.')
     plt.text(0.7,0.05, " R$^2$={:.3f} \n RMSE={} \n BIAS={} \n MAPE={:.3f}".format
              (stats['rsquare'],sci_notation(stats['rmse']), sci_notation(stats['bias']),stats['mdape']),
@@ -113,5 +126,6 @@ if str(args.plot).lower()=='true':
     #plt.text(0.05, 0.9,'NN: {}'.format(str(net['nn'])),fontsize=12,weight='bold',transform=plt.gca().transAxes)
     plt.xlabel('MERIS/OLCI Chl [\u03BCg/L]'),plt.ylabel('MODISNN Chl [\u03BCg/L]')
     plt.grid()
-    plt.savefig('TestData/training.svg')
+    plt.savefig(args.TrainingFile.parent / 'training.svg')
     plt.show()
+    print('===MODISNN plot completed; a result svg written to the input folder: training.svg ===')

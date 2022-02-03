@@ -127,7 +127,7 @@ if __name__ == "__main__":
     parser.add_argument('strDir', metavar='strDir', type=pathlib.Path, nargs=1,
                         help='the path to the folder of the MODIS data after SEADAS `l2gen` processing;\
                               this folder needs to include `rhos_xxx.img` and `rhos_xxx.hdr` files.')
-    parser.add_argument('-L', '--lakeID', metavar='lakeID', nargs=1, type=str,
+    parser.add_argument('-L', '--lakeID', metavar='', nargs=1, type=str,
                         #choices=['LW', 'LoW', 'LErie','general'],
                         default='general',
                         help='the choice lakeID for training model selection')
@@ -137,3 +137,4 @@ if __name__ == "__main__":
     #print('==test input arguments==: \n strDir: {} \n lakeID: {}'.format(str(args.strDir[0].absolute()),args.lakeID))
     #print("==directory exists? ",os.path.exists(str(args.strDir[0].absolute())))
     MODISNN_img_dim(str(args.strDir[0].absolute()),lakeID=args.lakeID[0])
+    print("===image processed by MODISNN; result write to the input image's *.data/NN_xxx.img/hdr ===")

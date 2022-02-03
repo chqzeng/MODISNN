@@ -12,7 +12,7 @@ check examples:
     evaluate()  \n
     evaluate_all() \n
     
-@author: ZengC modified based on [xxx? need to find this source]
+@author: ZengC modified based on [github project:bshishov/forecasting_metrics.py  https://gist.github.com/bshishov/]
 """
 import numpy as np
 

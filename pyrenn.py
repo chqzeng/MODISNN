@@ -1,3 +1,10 @@
+#this is a script downloaded from : https://pyrenn.readthedocs.io/en/latest/ by CZeng
+#Maintainer:	Dennis Atabay, <dennis.atabay@tum.de>
+#Organization:	Institute for Energy Economy and Application Technology, Technische Universität München
+#Version:	0.1
+#Date:	Jun 30, 2018
+#Copyright:	This documentation is licensed under a Creative Commons Attribution 4.0 International license.
+
 import numpy as np
 
 def CreateNN(nn,dIn=[0],dIntern=[],dOut=[]):

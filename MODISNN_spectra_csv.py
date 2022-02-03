@@ -27,18 +27,20 @@ def WaterIndex(Rrs,Bands=[681, 709, 753]):
     return idx
 
 ##setup the input arguments
-parser = argparse.ArgumentParser(description='MODISNN process image: ESA .dim files')
-parser.add_argument('path_modis_rhos_csv', metavar='path_modis_rhos', type=pathlib.Path, nargs=1,
+parser = argparse.ArgumentParser(description='MODISNN applying to spectra from a csv table')
+parser.add_argument('path_modis_rhos', type=pathlib.Path,
+                    default='TestData/MODIS_rhos_samples.csv',
                     help='the path to csv file of MODIS rhos bands, 14 MODIS bands [412nm to 1240nm] are required. \
                     \ninvalid band values as empty, lat/lon columns are optional; \
-                    \nexample at: .\TestData\MODIS_rhos_samples.csv')
-parser.add_argument('-L', '--lakeID', metavar='lakeID', nargs=1, type=str,
-                    #choices=['LW', 'LoW', 'LErie','general'],
-                    default=['general'],
-                    help='the choice lakeID for training model selection')
+                    \nstart with the provided example: ./TestData/MODIS_rhos_samples.csv')
+parser.add_argument('-L', '--lakeID', metavar='', type=str,
+                    #choices=['LW', 'LoW', 'LErie','LNA'],
+                    default='LNA',
+                    help="the choice lakeID for training model selection, \
+                        default: 'LNA' for Lakes of North America")
 args = parser.parse_args()
-path_modis_rhos=args.path_modis_rhos[0]  #".\TestData\MODIS_rhos_samples.csv"
-lakeID=args.lakeID[0]   #'LErie'
+path_modis_rhos=args.path_modis_rhos  #".\TestData\MODIS_rhos_samples.csv"
+lakeID=args.lakeID   #'LErie'
 #print('path:',path_modis_rhos,'lakeID: ',lakeID)
 
 ## initialization and load data
@@ -75,7 +77,7 @@ temp_saturated['NN#B']=9  ##NN9B result
 ##combine and export the result
 rst=pd.concat([temp, temp_saturated])
 rst['MCI']=WaterIndex(np.transpose(rst).to_numpy(),Bands=[681.25,708.75,753.75])
-rst['Chl']=rst['MCI']*1457+2.895
+rst['Chl']=rst['MCI']*1457+2.895  ##ref151: Binding et al. J. Plankton Res. 2011, 33, 793–806
 
 ##export the new csv:
 path_modis_nn=pathlib.Path(path_modis_rhos).parent / f"MODISNN_{pathlib.Path(path_modis_rhos).name}"
