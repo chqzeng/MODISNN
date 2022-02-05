@@ -46,7 +46,7 @@ python MODISNN_spectra_inline.py
 ```
 
 ### 3. input spectra as an image
-use ['MODISNN_img.py'](./MODISNN_img.py)
+use [`MODISNN_img.py`](./MODISNN_img.py)
 ```
 >>>python MODISNN_img.py TestData/A2011253190500.L2F -L LW
 ===image processed by MODISNN; result write to the input image folder: MODISNN_{inputname} ===
@@ -55,7 +55,7 @@ use ['MODISNN_img.py'](./MODISNN_img.py)
 usage: MODISNN_img.py [-h] [-L] path_L2
 MODISNN process image MODIS L2 files generated from l2gen
 positional arguments:
-  path_L2         the path to the MODIS L2 data after SEADAS `l2gen` processing; this L2 file, in netCDF4 format, needs to include `rhos_xxx` bands example data provided:
+  path_L2         the path to the MODIS L2 data after SEADAS `l2gen` processing; this L2 file, in netCDF4 format, needs to include ρs `rhos_xxx` bands example data provided:
                   TestData/A2011253190500.L2F
 options:
   -h, --help      show this help message and exit
@@ -66,7 +66,7 @@ options:
 ## Extra: [Optional]
 
 ### How to run the script with ESA `BEAM-DIMAP` files?
-[`MODISNN_img_dim.py`] processes MODINN for ESA SNAP [BEAM-DIMAP](https://seadas.gsfc.nasa.gov/help-8.1.0/general/overview/BeamDimapFormat.html) format, with [`.dim` file + `.data`folder]  specifically. 
+[`MODISNN_img_dim.py`](./MODISNN_img_dim.py) processes MODINN for ESA SNAP [BEAM-DIMAP](https://seadas.gsfc.nasa.gov/help-8.1.0/general/overview/BeamDimapFormat.html) format, with [`.dim` file + `.data`folder]  specifically. 
 
 run with commandline:
 ```
@@ -90,20 +90,20 @@ modisnn.MODISNN_img_dim("./TestData/A2011253190500_NN.data",lakeID="LW")
 
 
 ### How to prepare MODIS rhos imagery?
-- download MODIS L1 imagery from NASA oceancolor datacatalog
+- download MODIS L1 imagery from [NASA oceancolor data catalog](https://oceancolor.gsfc.nasa.gov/cgi/browse.pl?sen=amod)
 - run the L1 to L2 processing using   [l2gen](https://seadas.gsfc.nasa.gov/help-8.1.0/processors/ProcessL2gen.html), 
   suggesting you use the `SEADAS` software: SeaDAS-OCSSW
-- An example command of `l2gen`:
+	- An example command of `l2gen`:
   `l2gen ifile=./A2011253190500.L1B, geofile=./A2011253190500.GEO, ofile=./A2011253190500.L2F, resolution=1000, l2prod=Rrs_412,Rrs_443,Rrs_469,Rrs_488,Rrs_531,Rrs_547,Rrs_555,Rrs_645,Rrs_667,Rrs_678,Rrs_748,Rrs_859,Rrs_869,Rrs_1240,Rrs_1640,Rrs_2130,rhos_412,rhos_443,rhos_469,rhos_488,rhos_531,rhos_547,rhos_555,rhos_645,rhos_667,rhos_678,rhos_748,rhos_859,rhos_869,rhos_1240,rhos_1640,rhos_2130,flh,chlor_a,Zeu_lee, Zsd_lee, aer_opt=-3, cloud_wave=2130, cloud_thresh=0.04, maskglint=off, maskland=off, maskcloud=off, maskhilt=off, maskstlight=off`
 
 ### How to train my own NN models?
-in case you would like to apply MODISNN to a new lake and would like to improve the accruacy from the default `LNA` model of Lakes of North America, you can collect some training dataset and train a new model for your lake of interest. specifically, you need to prepare MODIS +  MERIS/OLCI data for that lake when BOTH the sensors are available. 
-- download MODIS L1 data and run `l2gen` to process toward `_rhos` as in the step above
+If you would like to apply MODISNN to a new lake and requires a finer model than the default `LNA` model of Lakes of North America, you can collect a training dataset and train a new model for a specific lake. MODIS +  MERIS/OLCI data for that lake are BOTH needed as input and output. 
+- download MODIS L1 data and run `l2gen` to process toward `ρs` as in the step above
 - download OLCI/MERIS L2 data from ESA website
 - prepare a list of grid points in your lake of interest; ideally at >5km for any of the two grid points to make sure samples are independant.
-- run pixel extraction tools (e.g., PixEx tool in the ESA SNAP software) to extract spectra from both MODIS and ESA(MERIS/OLCI) sensors.
-- join & filter the spectra from the two sensors.  using the script `***.py`.
-- train the MODISNN model, using the script [`MODISNN_training.py`]
+- run pixel extraction tools (e.g., [PixEx](https://seadas.gsfc.nasa.gov/help-8.1.0/gpf/GraphProcessingTool.html)) to extract spectra from both MODIS and (MERIS/OLCI) sensors.
+- cleanup and join the spectra from the two sensors.  using the script [`Sat_2_Sat_matchup.py`](./Sat_2_Sat_matchup.py).
+- train the MODISNN model, using the script [`MODISNN_training.py`](./MODISNN_training.py)
 ```
 >>>python .\MODISNN_training.py Training/LNA.pkl -B 14 -T 15 -M -P -N 64 64
 Iteration:  0           Error:  47352.16670898312       scale factor:  3.0
@@ -137,7 +137,8 @@ options:
   -N , --Ntraining   the max number of iteration, default:15
   -B , --NNbands     select # of NN model input bands,only support 14B and 9B, default:14
 ```
-- after training, the model will be exported as a `.csv` file. add 14B AND 9B NN models into the `./NNModels` folder of this repository for further use by assigning the `lakeID`
+- after training, the model will be exported as a `.csv` file. Add 14B/9B NN models to the `./NNModels` folder and choose the model by assigning the `lakeID` in applications
+
 ---
-the example training result using the given `LNA.pkl`:
+the example training result using the given [`LNA.pkl`](./LNA.pkl):
 ![MODISNN_training.svg](Training/MODISNN_training.svg "MODISNN_training")
