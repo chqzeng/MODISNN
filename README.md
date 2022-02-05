@@ -8,7 +8,7 @@ This repository is the implementation of the following publication:
 
 
 ## Setup
-There are a few geospatial python packages are relied to run this program. It is recommended that you use `Anaconda` to build an exclusive python enviornment for MODISNN. here are some suggested steps if you are note familiar with Anaconda:
+There are a few geospatial python packages are relied to run this program. It is recommended that you use `Anaconda` to build an exclusive python enviornment for MODISNN. here are some suggested steps if you are not familiar with Anaconda:
 - install Anaconda, [Installation Guide](https://docs.anaconda.com/anaconda/install/)
 - create a conda environment: `conda create -n modisnn python`
 - enter the new enviroment: `conda activate modisnn`
@@ -24,7 +24,7 @@ or you can manually download this repository and unzip to a local directory
 within the `modisnn` conda environment or other similar setup, run the MODISNN in one of the following two approaches:
 ### 1. input spectra as a table
 
-use [`MODISNN_spectra_csv.py`]:
+use [`MODISNN_spectra_csv.py`](./MODISNN_spectra_csv.py):
 ```
 >>>python MODISNN_spectra_csv.py './TestData/MODIS_rhos_samples.csv' -L 'LErie'
 
@@ -40,20 +40,33 @@ options:
 ```
 
 ### 2. input spectra inline
-use [`MODISNN_spectra_inline.py`] , replace the spectra and pick a training model:
+use [`MODISNN_spectra_inline.py`](./MODISNN_spectra_inline.py) , replace the spectra and pick a training model:
 ```
 python MODISNN_spectra_inline.py
 ```
 
 ### 3. input spectra as an image
+use ['MODISNN_img.py'](./MODISNN_img.py)
+```
+>>>python MODISNN_img.py TestData/A2011253190500.L2F -L LW
+===image processed by MODISNN; result write to the input image folder: MODISNN_{inputname} ===
+
+>>>python MODISNN_img.py -h
+usage: MODISNN_img.py [-h] [-L] path_L2
+MODISNN process image MODIS L2 files generated from l2gen
+positional arguments:
+  path_L2         the path to the MODIS L2 data after SEADAS `l2gen` processing; this L2 file, in netCDF4 format, needs to include `rhos_xxx` bands example data provided:
+                  TestData/A2011253190500.L2F
+options:
+  -h, --help      show this help message and exit
+  -L , --lakeID   the choice lakeID for training model selection
+```
 
 ---
 ## Extra: [Optional]
 
-### How to run the script with ESA `.dim` files?
-ESA SNAP uses `.dim` file, which is different in file organization than popular `geotiff`, ERDAS `.img` etc. The `.dim` file organizes the file structure, dimensions, projections, etc for all the bands, while the bands stored in a separate folder with same name but ending with `.data`
-
-An example script `MODISNN_img_dim.py` provided to process MODINN for ESA SNAP `.dim` file format specifically. 
+### How to run the script with ESA `BEAM-DIMAP` files?
+[`MODISNN_img_dim.py`] processes MODINN for ESA SNAP [BEAM-DIMAP](https://seadas.gsfc.nasa.gov/help-8.1.0/general/overview/BeamDimapFormat.html) format, with [`.dim` file + `.data`folder]  specifically. 
 
 run with commandline:
 ```
@@ -67,8 +80,7 @@ positional arguments:
   strDir                the path to the folder of the MODIS data after SEADAS `l2gen` processing; this folder needs to include `rhos_xxx.img` and `rhos_xxx.hdr` files.
 options:
   -h, --help            show this help message and exit
-  -L lakeID, --lakeID lakeID
-                        the choice lakeID for training model selection
+  -L , --lakeID         the choice lakeID for training model selection
 ```
 or use within a python script:
 ```
@@ -82,10 +94,10 @@ modisnn.MODISNN_img_dim("./TestData/A2011253190500_NN.data",lakeID="LW")
 - run the L1 to L2 processing using   [l2gen](https://seadas.gsfc.nasa.gov/help-8.1.0/processors/ProcessL2gen.html), 
   suggesting you use the `SEADAS` software: SeaDAS-OCSSW
 - An example command of `l2gen`:
-  `l2gen   ...`
+  `l2gen ifile=./A2011253190500.L1B, geofile=./A2011253190500.GEO, ofile=./A2011253190500.L2F, resolution=1000, l2prod=Rrs_412,Rrs_443,Rrs_469,Rrs_488,Rrs_531,Rrs_547,Rrs_555,Rrs_645,Rrs_667,Rrs_678,Rrs_748,Rrs_859,Rrs_869,Rrs_1240,Rrs_1640,Rrs_2130,rhos_412,rhos_443,rhos_469,rhos_488,rhos_531,rhos_547,rhos_555,rhos_645,rhos_667,rhos_678,rhos_748,rhos_859,rhos_869,rhos_1240,rhos_1640,rhos_2130,flh,chlor_a,Zeu_lee, Zsd_lee, aer_opt=-3, cloud_wave=2130, cloud_thresh=0.04, maskglint=off, maskland=off, maskcloud=off, maskhilt=off, maskstlight=off`
 
 ### How to train my own NN models?
-in case you would like to apply MODISNN to a new lake and would like to improve the accruacy from the default `general` model I provide, you can collect some training dataset and train a new model for your lake of interest. specifically, you need to prepare MODIS +  MERIS/OLCI data for that lake when BOTH the sensors are available. 
+in case you would like to apply MODISNN to a new lake and would like to improve the accruacy from the default `LNA` model of Lakes of North America, you can collect some training dataset and train a new model for your lake of interest. specifically, you need to prepare MODIS +  MERIS/OLCI data for that lake when BOTH the sensors are available. 
 - download MODIS L1 data and run `l2gen` to process toward `_rhos` as in the step above
 - download OLCI/MERIS L2 data from ESA website
 - prepare a list of grid points in your lake of interest; ideally at >5km for any of the two grid points to make sure samples are independant.
@@ -116,12 +128,9 @@ Maximum number of iterations reached
 
 >>>python .\MODISNN_training.py -h
 usage: MODISNN_training.py [-h] [-P] [-N] [-B] TrainingFile
-
 MODISNN training
-
 positional arguments:
   TrainingFile       the path to the pickle file as the training dataset, example provided: Training/All_Lakes_Training_NN.pkl
-
 options:
   -h, --help         show this help message and exit
   -P, --plot         flag to plot the training result, default is False

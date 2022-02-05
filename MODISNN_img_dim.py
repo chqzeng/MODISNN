@@ -44,22 +44,22 @@ def bitorderinvert(x):
     import struct
     return struct.unpack('>f', struct.pack('=f', x))
     
-def MODISNN_img_dim(strDir,lakeID='general'):
+def MODISNN_img_dim(strDir,lakeID='LNA'):
     """the main function for MODISNN to process image
        input: 
            strDir:  the path to the folder of the MODIS data after SEADAS `l2gen` processing
                     this given folder needs to include `rhos_xxx.img` and `rhos_xxx.hdr` files.
            for exmaple:   strDir=r"../MODIS_L2rhos_folder/A2011305183500.data/"  
-           lakeID: the lake ID to be used to chose a specific trained lake NN model, currenlty only choice are from:['LErie','LW','LoW','general']
+           lakeID: the lake ID to be used to chose a specific trained lake NN model, currenlty only choice are from:['LErie','LW','LoW','LNA']
            'LErie': for training model of Lake Erie
            'LW': Lake Winnipeg 
            'LoW':  Lake of the Woods
-           'general': a general model using samples from the above 3 lakes, may apply to other NorthAmerican lakes, but lower accuracy
+           'LNA': a general model using samples from the above 3 lakes, may apply to other NorthAmerican lakes, but lower accuracy
        output:
            3 bands simulating the OLIC/MERIS sensor on [681,708,753] nm; storing in the same folder.
     """
     bandlist=[412,443,469,488,531,547,555,645,667,678,748,859,869,1240]  
-    bandlist_saturated = [469, 555, 645, 859, 1240]  #for the MCI direct model, over saturated area
+    bandlist_saturated = [412,443,469,488,531, 555, 645, 859, 1240]  #for the MCI direct model, over saturated area
     path_img=os.path.join(strDir,'rhos_'+str(bandlist[0])+'.img')
     DN = gdal_array.LoadFile(path_img)
     DN_list=np.ndarray([len(bandlist) ,(DN.shape)[0],(DN.shape)[1]], dtype=float)
@@ -79,6 +79,13 @@ def MODISNN_img_dim(strDir,lakeID='general'):
     nn_struct=NN_prediction.Load_NNparams(path_net)
     #reuse MATLAB NN model to predict: input KxN (K is sample #; N is input dimension; output: MxK, M is output dimension
     Rrs_pred=NN_prediction.NN_prediction(nn_struct,np.transpose(DN_list.reshape(len(bandlist),-1)))
+    
+###------for user-built NN models with pyrenn for new lakes:-------------
+    # import pyrenn
+    # net=pyrenn.loadNN(r'./NNmodels/{}_NN_params_MODIS_rhos_149B_to_MERISL2_3B.csv'.format(lakeID))
+    # Rrs_pred = pyrenn.NNOut(np.transpose(DN_list.reshape(len(bandlist),-1)),net)
+ ###------for user-built NN models for new lakes:-------------
+   
     Rrs_pred=Rrs_pred.reshape(3,(DN.shape)[0],(DN.shape)[1])  #reformat the data into image shape
     Rrs_pred[(Rrs_pred > 1) | (Rrs_pred < -0.1)] =-32767.0  # np.nan  # remove invalid values, tolerance very small negative Rrs
 
@@ -124,17 +131,17 @@ if __name__ == "__main__":
     import argparse
     import pathlib
     parser = argparse.ArgumentParser(description='MODISNN process image: ESA .dim files')
-    parser.add_argument('strDir', metavar='strDir', type=pathlib.Path, nargs=1,
+    parser.add_argument('strDir', metavar='strDir', type=pathlib.Path, 
                         help='the path to the folder of the MODIS data after SEADAS `l2gen` processing;\
                               this folder needs to include `rhos_xxx.img` and `rhos_xxx.hdr` files.')
-    parser.add_argument('-L', '--lakeID', metavar='', nargs=1, type=str,
-                        #choices=['LW', 'LoW', 'LErie','general'],
-                        default='general',
+    parser.add_argument('-L', '--lakeID', metavar='', type=str,
+                        #choices=['LW', 'LoW', 'LErie','LNA'],
+                        default='LNA',
                         help='the choice lakeID for training model selection')
     args = parser.parse_args()
     
     #MODISNN_img_dim(r'./TestData/A2011253190500_NN.data/',lakeID='LW')
     #print('==test input arguments==: \n strDir: {} \n lakeID: {}'.format(str(args.strDir[0].absolute()),args.lakeID))
     #print("==directory exists? ",os.path.exists(str(args.strDir[0].absolute())))
-    MODISNN_img_dim(str(args.strDir[0].absolute()),lakeID=args.lakeID[0])
+    MODISNN_img_dim(str(args.strDir.absolute()),lakeID=args.lakeID)
     print("===image processed by MODISNN; result write to the input image's *.data/NN_xxx.img/hdr ===")
