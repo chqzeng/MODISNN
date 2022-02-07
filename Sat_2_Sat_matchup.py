@@ -18,6 +18,7 @@ stats_name_pattern_MODIS='{lakeID}_Rhos_3km_MODIS_{year}_Level 2_measurements.tx
 #MODIS: the 6 rows are descriptions, skip
 skip_rows_OLCI,skip_rows_MODIS=7,6
 srs_epsg=3174   #the EPSG code for the training area.
+lakeID="LErie"
 ###------------------------------------------------------------------------------------------
 
 import pandas as pd

@@ -140,5 +140,5 @@ options:
 - after training, the model will be exported as a `.csv` file. Add 14B/9B NN models to the `./NNModels` folder and choose the model by assigning the `lakeID` in applications
 
 ---
-the example training result using the given [`LNA.pkl`](./LNA.pkl):
+the example training result using the given [`LNA.pkl`](./Training/LNA.pkl):
 ![MODISNN_training.svg](Training/MODISNN_training.svg "MODISNN_training")
