@@ -143,4 +143,4 @@ options:
 the example training result using the given [`LNA.pkl`](./Training/LNA.pkl):
 ![MODISNN_training.svg](Training/MODISNN_training.svg "MODISNN_training")
 ---
-to train/apply the MODISNN using [`tensorflow2`](https://www.tensorflow.org/) instead of classic NN, please use ['MODISNN_TF'](./MODISNN_TF)
+to train/apply the MODISNN using [`tensorflow2`](https://www.tensorflow.org/) instead of classic NN, please use [`MODISNN_TF`](./MODISNN_TF)
