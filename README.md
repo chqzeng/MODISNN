@@ -21,7 +21,7 @@ The package can be cloned into a directory with:
 `git clone https://github.com/chqzeng/MODISNN`
 or you can manually download this repository and unzip to a local directory
 
-within the `modisnn` conda environment or other similar setup, run the MODISNN in one of the following two approaches:
+within the `modisnn` conda environment or other similar setup, run the MODISNN in one of the following approaches:
 ### 1. input spectra as a table
 
 use [`MODISNN_spectra_csv.py`](./MODISNN_spectra_csv.py):
@@ -66,7 +66,7 @@ options:
 ## Extra: [Optional]
 
 ### How to run the script with ESA `BEAM-DIMAP` files?
-[`MODISNN_img_dim.py`](./MODISNN_img_dim.py) processes MODINN for ESA SNAP [BEAM-DIMAP](https://seadas.gsfc.nasa.gov/help-8.1.0/general/overview/BeamDimapFormat.html) format, with [`.dim` file + `.data`folder]  specifically. 
+[`MODISNN_img_dim.py`](./MODISNN_img_dim.py) processes MODINN for ESA SNAP [BEAM-DIMAP](https://seadas.gsfc.nasa.gov/help-8.1.0/general/overview/BeamDimapFormat.html) format, with [`.dim`+`.data`]. 
 
 run with commandline:
 ```
@@ -142,3 +142,5 @@ options:
 ---
 the example training result using the given [`LNA.pkl`](./Training/LNA.pkl):
 ![MODISNN_training.svg](Training/MODISNN_training.svg "MODISNN_training")
+---
+to train/apply the MODISNN using [`tensorflow2`](https://www.tensorflow.org/) instead of classic NN, please use ['MODISNN_TF'](./MODISNN_TF)
