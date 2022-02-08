@@ -15,12 +15,13 @@ a [`requirements.txt`](./requirements.txt) included for a tested environment on 
 ---
 ## Usage
 ### 1. training MODISNN with TF
-use [`MODISNN_TF\MODISNN_TF_training.py`](.\MODISNN_TF_training.py)
+use [`MODISNN_TF\MODISNN_TF_training.py`](./MODISNN_TF_training.py)
 ```
 (tf2) $HOME\GitHub\MODISNN\MODISNN_TF>python .\MODISNN_TF_training.py ..\Training\LNA.pkl -T 2 -P -M -N 50 50
 ...tensorflow system msg ... 
 ===MODISNN TF training completed; a trained model written to: ..\Training\LNA_NNTF_params_MODIS_rhos_14_50_50_3.h5 ===
 ===MODISNN plot completed; a result svg written to the input folder: training_tf.svg ===
+
 (tf2) $HOME\GitHub\MODISNN\MODISNN_TF>python .\MODISNN_TF_training.py -h
 usage: MODISNN_TF_training.py [-h] [-B] [-N  [...]] [-T] [-M] [-V] [-P] TrainingFile
 MODISNN training
@@ -38,7 +39,7 @@ optional arguments:
 ```
 
 ### 2. apply MODISNN_TF to an image
-use [`MODISNN_TF\MODISNN_TF_img.py`](.\MODISNN_TF_img.py)
+use [`MODISNN_TF\MODISNN_TF_img.py`](./MODISNN_TF_img.py)
 ```
 (tf2) $HOME\GitHub\MODISNN\MODISNN_TF>python MODISNN_TF_img.py ../TestData/A2011253190500.L2F
 ...tensorflow system msg ...
@@ -54,5 +55,5 @@ positional arguments:
                   TestData/A2011253190500.L2F
 optional arguments:
   -h, --help      show this help message and exit
-  -L , --lakeID   the choice lakeID for training model selection files in pattern should exist: ../NNmodels/NNmodels_[lakeID]_NNTF_params_MODIS_rhos_[14/9]_??_??_3.h5
+  -L , --lakeID   the choice of lakeID for training model selection; files in pattern should exist: NNmodels/NNmodels_[lakeID]_NNTF_params_MODIS_rhos_[14/9]_??_??_3.h5
 ```
