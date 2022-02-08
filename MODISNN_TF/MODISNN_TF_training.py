@@ -131,6 +131,7 @@ for idx in range(0,Ntraining):
     model.set_weights(Wreset)  
     print('...{}'.format(int(idx*100/(Ntraining-1))), end="")
 print('\n')
+
 if args.model:  #save model
     file_model=args.TrainingFile.parent / "{lakeID}_NNTF_params_MODIS_rhos_{NNbands}_{node}_{output}.h5" \
         .format(lakeID=args.TrainingFile.name.replace(".pkl",""), NNbands=args.NNbands,node='_'.join((str(s) for s in args.nodes)), output=3)
