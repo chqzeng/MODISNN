@@ -105,6 +105,7 @@ net = pyrenn.train_LM(np.transpose(X.to_numpy().astype(float)),\
 if args.model:  #save model
     file_model=args.TrainingFile.parent / "{lakeID}_NN_params_MODIS_rhos_{NNbands}B_to_MERISL2_3B.csv" \
         .format(lakeID=args.TrainingFile.name.replace(".pkl",""), NNbands=args.NNbands)
+    pyrenn.saveNN(net,file_model)
     print('===MODISNN training completed; a trained model written to: {} ==='.format(file_model))
 
 ## convert model ouput (OLCI/MERIS bands) --> MCI --> chl    
