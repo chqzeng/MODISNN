@@ -37,6 +37,8 @@ optional arguments:
   -V, --verbose         flag to verbose the training process, default is False
   -P, --plot            flag to plot the training result, default is False
 ```
+the result of above training with [`LNA.pkl`](../Training/LNA.pkl)
+![MODISNN_TF_training](../Training/training_tf.svg "MODISNN_TF_training")
 
 ### 2. apply MODISNN_TF to an image
 use [`MODISNN_TF\MODISNN_TF_img.py`](./MODISNN_TF_img.py)
