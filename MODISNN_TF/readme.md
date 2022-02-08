@@ -39,8 +39,25 @@ optional arguments:
 ```
 the result of above training with [`LNA.pkl`](../Training/LNA.pkl)
 ![MODISNN_TF_training](../Training/training_tf.svg "MODISNN_TF_training")
+---
+### 2. apply MODISNN_TF to a sample
+```
+##-----enter the environment with following commands first----
+##conda activate tf2
+##cd .\MODISNN\MODISNN_TF
+##python
+##------------------------------------------------------------
+import numpy as np
+import tensorflow as tf
+from tensorflow import keras
+path_net=r'../NNmodels/LNA_NNTF_params_MODIS_rhos_14_64_64_3.h5'
+model=keras.models.load_model(path_net)
+modis_rhos=[0.0590195,0.05892771,0.06149231,0.06316882,0.07550708,0.08272035,0.08356204,0.05829617,0.05118244,0.04796457,0.03092559,0.02482116,0.02422284,0.01461126]
+olci_3bands=model.predict(np.array(modis_rhos).reshape(1,len(modis_rhos)))
+print("===output of the MODISNN is: {}===".format(olci_3bands))
+```
 
-### 2. apply MODISNN_TF to an image
+### 3. apply MODISNN_TF to an image
 use [`MODISNN_TF\MODISNN_TF_img.py`](./MODISNN_TF_img.py)
 ```
 (tf2) $HOME\GitHub\MODISNN\MODISNN_TF>python MODISNN_TF_img.py ../TestData/A2011253190500.L2F
