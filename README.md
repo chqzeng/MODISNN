@@ -1,6 +1,6 @@
 # MODISNN
 ## About
-From MODIS bands, use nueral network(NN) to predict MERIS/OLCI bands for chlorophyll-a concnetration modelling 
+From MODIS bands, use neural network(NN) to predict MERIS/OLCI bands for chlorophyll-a concentration modelling 
 
 This repository is the implementation of the following publication:
 
@@ -8,7 +8,7 @@ This repository is the implementation of the following publication:
 
 
 ## Setup
-There are a few geospatial python packages are relied to run this program. It is recommended that you use `Anaconda` to build an exclusive python enviornment for MODISNN. here are some suggested steps if you are not familiar with Anaconda:
+There are a few geospatial python packages are relied to run this program. It is recommended that you use `Anaconda` to build an exclusive python environment for MODISNN. here are some suggested steps if you are not familiar with Anaconda:
 - install Anaconda, [Installation Guide](https://docs.anaconda.com/anaconda/install/)
 - create a conda environment: `conda create -n modisnn python`
 - enter the new enviroment: `conda activate modisnn`
